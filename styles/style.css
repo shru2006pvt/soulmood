@@ -222,6 +222,38 @@ div[data-testid="stMetric"] {
     background-color: var(--surface);
 }
 
+/* Ensure form labels/questions stay readable on dark backgrounds */
+div[data-testid="stWidgetLabel"],
+div[data-testid="stWidgetLabel"] *,
+div[data-testid="stTextArea"] label,
+div[data-testid="stTextArea"] label *,
+div[data-testid="stTextInput"] label,
+div[data-testid="stTextInput"] label *,
+div[data-testid="stSelectbox"] label,
+div[data-testid="stSelectbox"] label *,
+div[data-testid="stRadio"] label,
+div[data-testid="stRadio"] label *,
+.stForm label,
+.stForm label * {
+    color: #efeaff !important;
+    opacity: 1 !important;
+    font-weight: 600 !important;
+    text-shadow: 0 1px 1px rgba(8, 4, 20, 0.55);
+}
+
+div[data-testid="stTextArea"] textarea,
+div[data-testid="stTextInput"] input {
+    color: #efeaff !important;
+    background: rgba(28, 14, 58, 0.72) !important;
+    border: 1px solid rgba(231, 190, 98, 0.38) !important;
+}
+
+div[data-testid="stTextArea"] textarea::placeholder,
+div[data-testid="stTextInput"] input::placeholder {
+    color: #cfc2e9 !important;
+    opacity: 1 !important;
+}
+
 .recommend-card {
     height: 100%;
     padding: 0.95rem 1rem;
