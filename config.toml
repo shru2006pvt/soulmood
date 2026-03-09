@@ -1,0 +1,7 @@
+[theme]
+base="dark"
+primaryColor="#D4AF37" # Your golden accent color
+backgroundColor="#1a0b2e" # The deep space purple from your mockup
+secondaryBackgroundColor="#2d1b4e" # Slightly lighter purple for backgrounds
+textColor="#FFFFFF"
+font="sans serif"
