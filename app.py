@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 import hashlib
@@ -11,24 +11,39 @@ import streamlit as st
 
 st.set_page_config(page_title="SoulMood", page_icon="✨", layout="wide")
 
-DATA_DIR = Path("data")
-DATA_FILE = DATA_DIR / "mood_data.csv"
-CUSTOM_MOODS_FILE = DATA_DIR / "custom_moods.json"
-USERS_FILE = DATA_DIR / "users.json"
-LOGO_FILES = [Path("assets/Amitylogo.jpeg"), Path("assets/happinesslogo.png")]
+def resolve_path(preferred: str, fallback: str) -> Path:
+    preferred_path = Path(preferred)
+    fallback_path = Path(fallback)
+    if preferred_path.exists():
+        return preferred_path
+    if fallback_path.exists():
+        return fallback_path
+    return preferred_path
+
+
+DATA_FILE = resolve_path("data/mood_data.csv", "mood_data.csv")
+CUSTOM_MOODS_FILE = resolve_path("data/custom_moods.json", "custom_moods.json")
+USERS_FILE = resolve_path("data/users.json", "users.json")
+LOGO_FILES = [
+    resolve_path("assets/Amitylogo.jpeg", "Amitylogo.jpeg"),
+    resolve_path("assets/happinesslogo.png", "happinesslogo.png"),
+]
 DATA_COLUMNS = ["Date", "Time", "Mood", "Journal"]
 
 
 def load_css(path: str) -> None:
-    css_path = Path(path)
-    if css_path.exists():
-        st.markdown(f"<style>{css_path.read_text(encoding='utf-8')}</style>", unsafe_allow_html=True)
-    else:
-        st.warning("CSS file not found. Expected: styles/style.css")
+    candidate_paths = [Path(path), Path("style.css")]
+    for css_path in candidate_paths:
+        if css_path.exists():
+            st.markdown(f"<style>{css_path.read_text(encoding='utf-8')}</style>", unsafe_allow_html=True)
+            return
+    st.warning("CSS file not found. Expected: styles/style.css or style.css")
 
 
 def ensure_data_store() -> None:
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    for path in [DATA_FILE, CUSTOM_MOODS_FILE, USERS_FILE]:
+        path.parent.mkdir(parents=True, exist_ok=True)
+
     if not DATA_FILE.exists():
         pd.DataFrame(columns=DATA_COLUMNS).to_csv(DATA_FILE, index=False)
     if not CUSTOM_MOODS_FILE.exists():
@@ -292,9 +307,9 @@ BASE_MOODS = {
 
 SOUNDS = {
     "Silent": None,
-    "Soft Piano": "assets/audios/piano.mp3",
-    "Nature Sounds": "assets/audios/nature.mp3",
-    "Wind Chimes": "assets/audios/chimes.mp3",
+    "Soft Piano": resolve_path("assets/audios/piano.mp3", "piano.mp3"),
+    "Nature Sounds": resolve_path("assets/audios/nature.mp3", "nature.mp3"),
+    "Wind Chimes": resolve_path("assets/audios/chimes.mp3", "chimes.mp3"),
 }
 
 
@@ -407,8 +422,8 @@ def render_dashboard(moods: dict[str, dict], entries_df: pd.DataFrame, streak: i
     with st.popover("🎧 Choose your sound"):
         selected_sound = st.radio("Sound options", list(SOUNDS.keys()), label_visibility="collapsed")
         sound_path = SOUNDS[selected_sound]
-        if sound_path:
-            st.audio(sound_path, loop=True)
+        if sound_path and sound_path.exists():
+            st.audio(str(sound_path), loop=True)
 
     st.markdown('<p class="section-title">Select your current mood</p>', unsafe_allow_html=True)
 
@@ -674,3 +689,5 @@ if st.session_state.page == "mood":
     render_mood_page(all_mood_data, selected, streak_days)
 else:
     render_dashboard(all_mood_data, entries, streak_days)
+
+
