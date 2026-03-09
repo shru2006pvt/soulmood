@@ -223,14 +223,22 @@ div[data-testid="stMetric"] {
 }
 
 /* Ensure form labels/questions stay readable on dark backgrounds */
-div[data-testid="stTextArea"] label p,
-div[data-testid="stTextInput"] label p,
-div[data-testid="stSelectbox"] label p,
-div[data-testid="stRadio"] label p,
-.stForm label p {
+div[data-testid="stWidgetLabel"],
+div[data-testid="stWidgetLabel"] *,
+div[data-testid="stTextArea"] label,
+div[data-testid="stTextArea"] label *,
+div[data-testid="stTextInput"] label,
+div[data-testid="stTextInput"] label *,
+div[data-testid="stSelectbox"] label,
+div[data-testid="stSelectbox"] label *,
+div[data-testid="stRadio"] label,
+div[data-testid="stRadio"] label *,
+.stForm label,
+.stForm label * {
     color: #efeaff !important;
     opacity: 1 !important;
-    font-weight: 600;
+    font-weight: 600 !important;
+    text-shadow: 0 1px 1px rgba(8, 4, 20, 0.55);
 }
 
 div[data-testid="stTextArea"] textarea,
